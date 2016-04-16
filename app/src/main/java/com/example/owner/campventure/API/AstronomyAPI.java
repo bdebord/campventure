@@ -28,7 +28,6 @@ public class AstronomyAPI {
                 .build(); //creates retrofit object
 
         this.api = this.retrofit.create(AstronomyAPIInterface.class); //Creates the AstronomyAPIInterface makes the request
-
     }
 
     public void getAstronomy(String zip, Callback<AstronomyResponse> callback){

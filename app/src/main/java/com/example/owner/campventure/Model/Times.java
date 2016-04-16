@@ -3,10 +3,9 @@ package com.example.owner.campventure.Model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Owner on 4/13/2016.
+ * Created by Owner on 4/16/2016.
  */
-public class Time {
-
+public class Times {
     @SerializedName("hour")
     public String hour;
 
@@ -14,6 +13,6 @@ public class Time {
     public String minute;
 
     public String getTime(){
-        return "7:30"; //todo
+        return hour +":"+ minute;
     }
 }

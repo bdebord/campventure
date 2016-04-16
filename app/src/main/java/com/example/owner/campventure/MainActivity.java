@@ -65,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         api.getAstronomy("46060", new Callback<AstronomyResponse>() {
             @Override
             public void onResponse(Call<AstronomyResponse> call, Response<AstronomyResponse> response) {
-            response.body().sunset.getTime();
+            response.body().sunPhase.getSunsetTime();  //sun_phase.getTime();
+
             }
 
             @Override
