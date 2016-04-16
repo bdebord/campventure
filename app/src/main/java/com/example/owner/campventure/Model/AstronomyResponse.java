@@ -20,6 +20,6 @@ public class AstronomyResponse {
     public Time sunset; */
 
  @SerializedName("sun_phase")
-  public SunPhase sunPhase;
+  public SunPhase sunphase;
 
 }

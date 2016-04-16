@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 public class SunPhase{
     @SerializedName("sunrise")
-    Times sunrise;
+    public Times sunrise;
 
     @SerializedName("sunset")
-    Times sunset;
+    public Times sunset;
 
     public String getSunsetTime(){
         String hour = sunset.hour;

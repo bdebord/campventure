@@ -1,14 +1,18 @@
 package com.example.owner.campventure;
 
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.owner.campventure.API.AstronomyAPI;
 import com.example.owner.campventure.Model.AstronomyResponse;
@@ -20,6 +24,7 @@ import retrofit2.Response;
 //http://api.wunderground.com/api/634dc40d11e172b6/astronomy/q/46060.json
 
 public class MainActivity extends AppCompatActivity {
+public static String sunSetTime = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +66,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void submitClicked() {
+        EditText inputZip = (EditText) findViewById(R.id.inputZip);
+        String zip = inputZip.getText().toString();
+
         AstronomyAPI api = new AstronomyAPI();
-        api.getAstronomy("46060", new Callback<AstronomyResponse>() {
+        api.getAstronomy(zip, new Callback<AstronomyResponse>() {
             @Override
             public void onResponse(Call<AstronomyResponse> call, Response<AstronomyResponse> response) {
-            response.body().sunPhase.getSunsetTime();  //sun_phase.getTime();
+                sunSetTime = response.body().sunphase.getSunsetTime();  //sun_phase.getTime();
+                TextView textSunset = (TextView) findViewById(R.id.textSunset);
+                textSunset.setText("The sun will set at " + sunSetTime + ".");
 
             }
 
@@ -74,12 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void timeApiCall() {
 
     }
-
-
-
-}
+    }

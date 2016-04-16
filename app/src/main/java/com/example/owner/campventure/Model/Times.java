@@ -15,4 +15,5 @@ public class Times {
     public String getTime(){
         return hour +":"+ minute;
     }
+
 }
