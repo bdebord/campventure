@@ -66,6 +66,7 @@
             android:layout_marginTop="45dp"
             android:layout_gravity="center_horizontal"
             android:textColor="#FFFFFF"/>
+
         <ImageView
             android:layout_width="250dp"
             android:layout_height="250dp"
@@ -73,6 +74,7 @@
             android:id="@+id/compassArrow"
             android:layout_row="5"
             android:layout_column="0"
+            android:layout_marginTop="5dp"
             />
 
     </GridLayout>

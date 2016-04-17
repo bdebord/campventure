@@ -1,39 +1,32 @@
 package com.example.owner.campventure;
 
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.owner.campventure.API.AstronomyAPI;
 import com.example.owner.campventure.Model.AstronomyResponse;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.os.CountDownTimer;
+
 
 //http://api.wunderground.com/api/634dc40d11e172b6/astronomy/q/46060.json
 
 public class MainActivity extends AppCompatActivity {
-public static String sunSetTime = "";
+    int sunSetTimeMs;
     private Compass compass;
+    TextView textSunset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button buttonSubmit = (Button)findViewById(R.id.buttonSubmit);
-
         buttonSubmit.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View V) {
@@ -67,40 +60,38 @@ public static String sunSetTime = "";
         compass.stop();
     }
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    } */
-
     private void submitClicked() {
         EditText inputZip = (EditText) findViewById(R.id.inputZip);
         String zip = inputZip.getText().toString();
+        doAstroCall(zip);
 
+        textSunset = (TextView) findViewById(R.id.textSunset);
+
+        //sunSetTimeMs = (int) sunSetTime.getVal();
+
+    }
+    private void doAstroCall(String zip){
         AstronomyAPI api = new AstronomyAPI();
         api.getAstronomy(zip, new Callback<AstronomyResponse>() {
             @Override
             public void onResponse(Call<AstronomyResponse> call, Response<AstronomyResponse> response) {
-                sunSetTime = response.body().sunphase.getSunsetTime();  //sun_phase.getTime();
-                TextView textSunset = (TextView) findViewById(R.id.textSunset);
-                textSunset.setText("The sun will set at " + sunSetTime + ".");
+                int temp;
+                temp = response.body().sunphase.getSecondsUntilSunset();  //sun_phase.getTime();
+
+                new CountDownTimer(temp, 60000) {
+                    public void onTick(long millisUntilFinished) {
+                        int seconds =(int) millisUntilFinished / 1000;
+                        int hours = (seconds % 86400 ) / 3600 ;
+                        int minutes = ((seconds % 86400 ) % 3600 ) / 60;
+
+                        textSunset.setText(hours + "h " + minutes + "m until sunset.");
+                    }
+                    public void onFinish() {
+                        textSunset.setText("The sun has set.");
+                    }
+
+                }.start();
+
 
             }
 
@@ -109,6 +100,8 @@ public static String sunSetTime = "";
 
             }
         });
+    }
 
-    }
-    }
+
+
+}
