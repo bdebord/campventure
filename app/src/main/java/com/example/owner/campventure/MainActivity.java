@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.owner.campventure.API.AstronomyAPI;
@@ -25,12 +26,12 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 public static String sunSetTime = "";
+    private Compass compass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Button buttonSubmit = (Button)findViewById(R.id.buttonSubmit);
 
         buttonSubmit.setOnClickListener(
@@ -40,9 +41,33 @@ public static String sunSetTime = "";
                     }
                 }
         );
+
+        compass = new Compass(this);
+        compass.arrowView = (ImageView) findViewById(R.id.compassArrow);
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        compass.start();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        compass.stop();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        compass.start();
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        compass.stop();
+    }
 
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -63,7 +88,7 @@ public static String sunSetTime = "";
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    } */
 
     private void submitClicked() {
         EditText inputZip = (EditText) findViewById(R.id.inputZip);
