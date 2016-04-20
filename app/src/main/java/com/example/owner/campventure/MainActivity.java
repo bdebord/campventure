@@ -7,12 +7,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.owner.campventure.API.AstronomyAPI;
 import com.example.owner.campventure.Model.AstronomyResponse;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import android.os.CountDownTimer;
 
 
 //http://api.wunderground.com/api/634dc40d11e172b6/astronomy/q/46060.json
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button buttonSubmit = (Button)findViewById(R.id.buttonSubmit);
+        Button buttonSubmit = (Button) findViewById(R.id.buttonSubmit);
         buttonSubmit.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View V) {
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         compass = new Compass(this);
         compass.arrowView = (ImageView) findViewById(R.id.compassArrow);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -49,11 +52,13 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         compass.stop();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         compass.start();
     }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -66,32 +71,30 @@ public class MainActivity extends AppCompatActivity {
         doAstroCall(zip);
 
         textSunset = (TextView) findViewById(R.id.textSunset);
-
-        //sunSetTimeMs = (int) sunSetTime.getVal();
-
     }
-    private void doAstroCall(String zip){
+
+    private void doAstroCall(String zip) {
         AstronomyAPI api = new AstronomyAPI();
         api.getAstronomy(zip, new Callback<AstronomyResponse>() {
             @Override
             public void onResponse(Call<AstronomyResponse> call, Response<AstronomyResponse> response) {
-                int temp;
-                temp = response.body().sunphase.getSecondsUntilSunset();  //sun_phase.getTime();
+                if (response.body().sunphase == null) {
+                    showToast();
+                    return;
+                }
+                Integer milliseconds = response.body().sunphase.getSecondsUntilSunset();  //sun_phase.getTime();
 
-                new CountDownTimer(temp, 60000) {
-                    public void onTick(long millisUntilFinished) {
-                        int seconds =(int) millisUntilFinished / 1000;
-                        int hours = (seconds % 86400 ) / 3600 ;
-                        int minutes = ((seconds % 86400 ) % 3600 ) / 60;
-
+                new SunsetUpdateTimer(milliseconds, new SunsetUpdateTimer.UpdateTimerTickListener() {
+                    @Override
+                    public void onTick(int hours, int minutes, int seconds) {
                         textSunset.setText(hours + "h " + minutes + "m until sunset.");
                     }
+
+                    @Override
                     public void onFinish() {
                         textSunset.setText("The sun has set.");
                     }
-
-                }.start();
-
+                }).start();
 
             }
 
@@ -102,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    public void showToast(){
+        Toast.makeText(getApplicationContext(),"Unable to find ZIP code, please try again later.", Toast.LENGTH_LONG).show();
+    }
 
 }

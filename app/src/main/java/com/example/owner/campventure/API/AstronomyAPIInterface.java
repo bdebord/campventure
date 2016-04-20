@@ -7,9 +7,6 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
-/**
- * Created by Owner on 4/13/2016.
- */
 public interface AstronomyAPIInterface {
     @GET ("{zip}.json") //retrofit OLD: @GET ("{zip}.json")
     Call<AstronomyResponse> getAstronomy(@Path("zip")String zip); //me
