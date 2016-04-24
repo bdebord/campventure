@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.example.owner.campventure.API.AstronomyAPI;
 import com.example.owner.campventure.Model.AstronomyResponse;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,6 +41,13 @@ public class MainActivity extends AppCompatActivity {
 
         compass = new Compass(this);
         compass.arrowView = (ImageView) findViewById(R.id.compassArrow);
+
+        GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
+        String zip = gpsTracker.getZip();
+
+        EditText zipText = (EditText)findViewById(R.id.inputZip);
+        zipText.setText(zip);
+
     }
 
     @Override
